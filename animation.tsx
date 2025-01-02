@@ -140,7 +140,7 @@ const SplitFlapDisplay = () => {
         if (isInTargetText) {
           finalChar = targetText[colIndex - startCol];
           textType = 'target';
-          startDelay = colIndex * 30;
+          startDelay = colIndex * 30 + 1000;  // 1秒遅延を追加
         } else {
           // コードと法文の両方を配置可能にする
           const shouldShowCode = Math.random() > 0.5;
@@ -219,7 +219,7 @@ const SplitFlapDisplay = () => {
       const elapsed = currentTime - startTime;
 
       // 7秒経過後はアニメーションを停止
-      if (elapsed > 7400) {
+      if (elapsed > 8400) {  // 7400から8400に変更
         cancelAnimationFrame(frameId);
         return;
       }
@@ -246,12 +246,12 @@ const SplitFlapDisplay = () => {
             const targetCenterCol = startCol + Math.floor(targetText.length / 2);
             const targetCenterRow = targetRow;
             
-            if (elapsed > 6200 && elapsed < 6700) {
+            if (elapsed > 7200 && elapsed < 7700) {  // 6200から7200に変更
               const distanceFromCenter = Math.sqrt(
                 Math.pow(rowIndex - targetCenterRow, 2) + 
                 Math.pow(colIndex - targetCenterCol, 2)
               );
-              const rippleTime = (elapsed - 6200) / 500;
+              const rippleTime = (elapsed - 7200) / 500;  // 6200から7200に変更
               const rippleRadius = rippleTime * Math.max(ROWS, COLS);
               const rippleWidth = 8;  // 波の幅を広げる
               const rippleIntensity = Math.exp(-Math.pow(distanceFromCenter - rippleRadius, 2) / rippleWidth);
