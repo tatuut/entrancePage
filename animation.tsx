@@ -219,7 +219,7 @@ const SplitFlapDisplay = () => {
       const elapsed = currentTime - startTime;
 
       // 7秒経過後はアニメーションを停止
-      if (elapsed > 7000) {
+      if (elapsed > 7400) {
         cancelAnimationFrame(frameId);
         return;
       }
@@ -246,12 +246,12 @@ const SplitFlapDisplay = () => {
             const targetCenterCol = startCol + Math.floor(targetText.length / 2);
             const targetCenterRow = targetRow;
             
-            if (elapsed > 5800 && elapsed < 6300) {
+            if (elapsed > 6200 && elapsed < 6700) {
               const distanceFromCenter = Math.sqrt(
                 Math.pow(rowIndex - targetCenterRow, 2) + 
                 Math.pow(colIndex - targetCenterCol, 2)
               );
-              const rippleTime = (elapsed - 5800) / 500;
+              const rippleTime = (elapsed - 6200) / 500;
               const rippleRadius = rippleTime * Math.max(ROWS, COLS);
               const rippleWidth = 8;  // 波の幅を広げる
               const rippleIntensity = Math.exp(-Math.pow(distanceFromCenter - rippleRadius, 2) / rippleWidth);
@@ -436,7 +436,7 @@ const SplitFlapDisplay = () => {
       {/* モダンなリンクセクション */}
       <div className="mt-4 flex justify-center gap-8">
         <a
-          href="https://legal-agent.jp"
+          href="https://www.legalagent.co.jp/"
           target="_blank"
           rel="noopener noreferrer"
           className="group relative px-6 py-2 bg-transparent overflow-hidden"
@@ -449,7 +449,7 @@ const SplitFlapDisplay = () => {
         </a>
 
         <a
-          href="https://legal-agent.co.jp"
+          href="https://www.legalagent.co.jp/"
           target="_blank"
           rel="noopener noreferrer"
           className="group relative px-6 py-2 bg-transparent overflow-hidden"
