@@ -356,110 +356,112 @@ const SplitFlapDisplay = () => {
   }
 
   return (
-    <div className="bg-black p-2 rounded-lg shadow-lg overflow-hidden">
-      <div className="flex flex-col gap-0">
-        {grid.slice(visibleStartRow, visibleStartRow + VISIBLE_ROWS).map((row, rowIndex) => (
-          <div key={rowIndex} className="flex justify-start gap-0 whitespace-pre">
-            {row.map((cell, colIndex) => {
-              const actualRowIndex = rowIndex + visibleStartRow;  // 実際の行インデックスを計算
-              const isTargetCell = actualRowIndex === targetRow &&
-                                 colIndex >= startCol &&
-                                 colIndex < startCol + targetText.length;
-              const isFinished = !cell.isActive;
+    <div className="bg-black min-h-screen w-full flex items-center justify-center">
+      <div className="bg-black p-2 rounded-lg shadow-lg overflow-hidden">
+        <div className="flex flex-col gap-0">
+          {grid.slice(visibleStartRow, visibleStartRow + VISIBLE_ROWS).map((row, rowIndex) => (
+            <div key={rowIndex} className="flex justify-start gap-0 whitespace-pre">
+              {row.map((cell, colIndex) => {
+                const actualRowIndex = rowIndex + visibleStartRow;  // 実際の行インデックスを計算
+                const isTargetCell = actualRowIndex === targetRow &&
+                                   colIndex >= startCol &&
+                                   colIndex < startCol + targetText.length;
+                const isFinished = !cell.isActive;
 
-              // 動的な背景色の計算
-              const baseColor = 23;
-              const time = Date.now() * 0.001;
-              const xFreq = (actualRowIndex * COLS + colIndex) * 0.1;
-              const yFreq = (colIndex * ROWS + actualRowIndex) * 0.08;
-              const waveTime = time;
-              const baseWave1 = Math.sin(waveTime + xFreq) * 4;
-              const baseWave2 = Math.cos(waveTime * 0.7 + yFreq) * 3;
-              const baseWave3 = Math.sin((waveTime * 0.5 + xFreq + yFreq) * 0.5) * 3;
-              const baseWave4 = Math.cos(waveTime * 0.3 - (xFreq * yFreq) * 0.01) * 2;
-              const baseWave5 = Math.sin(waveTime * 0.2 + Math.sqrt(xFreq * xFreq + yFreq * yFreq)) * 2;
-              const renderColorNoise = baseColor + baseWave1 + baseWave2 + baseWave3 + baseWave4 + baseWave5;
+                // 動的な背景色の計算
+                const baseColor = 23;
+                const time = Date.now() * 0.001;
+                const xFreq = (actualRowIndex * COLS + colIndex) * 0.1;
+                const yFreq = (colIndex * ROWS + actualRowIndex) * 0.08;
+                const waveTime = time;
+                const baseWave1 = Math.sin(waveTime + xFreq) * 4;
+                const baseWave2 = Math.cos(waveTime * 0.7 + yFreq) * 3;
+                const baseWave3 = Math.sin((waveTime * 0.5 + xFreq + yFreq) * 0.5) * 3;
+                const baseWave4 = Math.cos(waveTime * 0.3 - (xFreq * yFreq) * 0.01) * 2;
+                const baseWave5 = Math.sin(waveTime * 0.2 + Math.sqrt(xFreq * xFreq + yFreq * yFreq)) * 2;
+                const renderColorNoise = baseColor + baseWave1 + baseWave2 + baseWave3 + baseWave4 + baseWave5;
 
-              // 金色の波動効果を維持
-              let renderRippleGold = 0;
-              let renderRippleRed = 0;
-              if (cell.textType === 'target' && cell.isHighlighted) {
-                const distanceFromCenter = Math.sqrt(
-                  Math.pow(actualRowIndex - targetRow, 2) + 
-                  Math.pow(colIndex - (startCol + targetText.length / 2), 2)
-                );
-                // より強い残存波動効果
-                renderRippleGold = Math.exp(-distanceFromCenter * 0.08) * 35;  // 強度と減衰率を調整
-                renderRippleRed = renderRippleGold * 0.6;  // 赤成分を追加
-              }
+                // 金色の波動効果を維持
+                let renderRippleGold = 0;
+                let renderRippleRed = 0;
+                if (cell.textType === 'target' && cell.isHighlighted) {
+                  const distanceFromCenter = Math.sqrt(
+                    Math.pow(actualRowIndex - targetRow, 2) + 
+                    Math.pow(colIndex - (startCol + targetText.length / 2), 2)
+                  );
+                  // より強い残存波動効果
+                  renderRippleGold = Math.exp(-distanceFromCenter * 0.08) * 35;  // 強度と減衰率を調整
+                  renderRippleRed = renderRippleGold * 0.6;  // 赤成分を追加
+                }
 
-              const renderBgColor = `rgb(${renderColorNoise + renderRippleRed + renderRippleGold}, ${renderColorNoise + renderRippleGold}, ${renderColorNoise})`;
+                const renderBgColor = `rgb(${renderColorNoise + renderRippleRed + renderRippleGold}, ${renderColorNoise + renderRippleGold}, ${renderColorNoise})`;
 
-              // テキストタイプと状態に基づいて色を決定
-              let textColor = '#4ade80';  // デフォルトの緑色
-              if (cell.textType === 'target' && cell.isHighlighted) {
-                const glowAmount = cell.glowIntensity || 0;
-                textColor = `rgb(255, ${191 + glowAmount}, ${36 + glowAmount * 0.5})`;  // より金色に近い光り方
-              } else if (cell.textType === 'law') {
-                textColor = '#9ca3af';
-              }
+                // テキストタイプと状態に基づいて色を決定
+                let textColor = '#4ade80';  // デフォルトの緑色
+                if (cell.textType === 'target' && cell.isHighlighted) {
+                  const glowAmount = cell.glowIntensity || 0;
+                  textColor = `rgb(255, ${191 + glowAmount}, ${36 + glowAmount * 0.5})`;  // より金色に近い光り方
+                } else if (cell.textType === 'law') {
+                  textColor = '#9ca3af';
+                }
 
-              return (
-                <div
-                  key={`${actualRowIndex}-${colIndex}`}
-                  className="relative"
-                >
+                return (
                   <div
-                    className={`w-5 h-5 flex items-center justify-center
-                              border-b-[1.3px] border-l-[1.3px] border-r-[1.3px] border-neutral-800/70
-                              transition-all duration-50 text-xs
-                              ${cell.isActive ? 'transform-gpu' : ''}`}
-                    style={{ 
-                      fontFamily: 'Consolas, monospace',
-                      fontWeight: '600',
-                      backgroundColor: renderBgColor,
-                      color: textColor,
-                      transform: cell.isActive ? `rotateX(${(timeRef.current - cell.lastUpdate) / cell.cycleSpeed * 180}deg)` : 'none',
-                      textShadow: cell.glowIntensity ? `0 0 ${cell.glowIntensity * 1.5}px rgba(255, 191, 36, 0.9)` : 'none'  // より強い光沢
-                    }}
+                    key={`${actualRowIndex}-${colIndex}`}
+                    className="relative"
                   >
-                    {cell.currentChar}
-                    <div className="absolute top-0 left-0 w-full h-[1.3px] bg-neutral-800/70" />
+                    <div
+                      className={`w-5 h-5 flex items-center justify-center
+                                border-b-[1.3px] border-l-[1.3px] border-r-[1.3px] border-neutral-800/70
+                                transition-all duration-50 text-xs
+                                ${cell.isActive ? 'transform-gpu' : ''}`}
+                      style={{ 
+                        fontFamily: 'Consolas, monospace',
+                        fontWeight: '600',
+                        backgroundColor: renderBgColor,
+                        color: textColor,
+                        transform: cell.isActive ? `rotateX(${(timeRef.current - cell.lastUpdate) / cell.cycleSpeed * 180}deg)` : 'none',
+                        textShadow: cell.glowIntensity ? `0 0 ${cell.glowIntensity * 1.5}px rgba(255, 191, 36, 0.9)` : 'none'
+                      }}
+                    >
+                      {cell.currentChar}
+                      <div className="absolute top-0 left-0 w-full h-[1.3px] bg-neutral-800/70" />
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        ))}
-      </div>
-      
-      {/* モダンなリンクセクション */}
-      <div className="mt-4 flex justify-center gap-8">
-        <a
-          href="https://www.legalagent.co.jp/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group relative px-6 py-2 bg-transparent overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-yellow-500/5 transform group-hover:scale-105 transition-transform duration-500" />
-          <div className="absolute inset-0 border border-neutral-800/50 group-hover:border-yellow-500/30 transition-colors duration-500" />
-          <span className="relative text-neutral-400 group-hover:text-yellow-500 transition-colors duration-300 text-xs tracking-wider">
-            LEGAL OFFICE
-          </span>
-        </a>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+        
+        {/* モダンなリンクセクション */}
+        <div className="mt-4 flex justify-center gap-8">
+          <a
+            href="https://www.legalagent.co.jp/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative px-6 py-2 bg-transparent overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-yellow-500/5 transform group-hover:scale-105 transition-transform duration-500" />
+            <div className="absolute inset-0 border border-neutral-800/50 group-hover:border-yellow-500/30 transition-colors duration-500" />
+            <span className="relative text-neutral-400 group-hover:text-yellow-500 transition-colors duration-300 text-xs tracking-wider">
+              LEGAL OFFICE
+            </span>
+          </a>
 
-        <a
-          href="https://www.legalagent.co.jp/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group relative px-6 py-2 bg-transparent overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-blue-500/5 transform group-hover:scale-105 transition-transform duration-500" />
-          <div className="absolute inset-0 border border-neutral-800/50 group-hover:border-blue-500/30 transition-colors duration-500" />
-          <span className="relative text-neutral-400 group-hover:text-blue-500 transition-colors duration-300 text-xs tracking-wider">
-            CORPORATION
-          </span>
-        </a>
+          <a
+            href="https://www.legalagent.co.jp/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative px-6 py-2 bg-transparent overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-blue-500/5 transform group-hover:scale-105 transition-transform duration-500" />
+            <div className="absolute inset-0 border border-neutral-800/50 group-hover:border-blue-500/30 transition-colors duration-500" />
+            <span className="relative text-neutral-400 group-hover:text-blue-500 transition-colors duration-300 text-xs tracking-wider">
+              CORPORATION
+            </span>
+          </a>
+        </div>
       </div>
     </div>
   );

@@ -1,9 +1,10 @@
+import React from 'react';
 import SplitFlapDisplay from '../animation';
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
+    <main className="min-h-screen bg-black">
       <SplitFlapDisplay />
-    </div>
+    </main>
   );
 } 
